@@ -1,12 +1,14 @@
 import { MenuIcon, XIcon } from "lucide-react";
 import { useState } from "react";
-import { motion } from "motion/react";
+import { motion as Motion } from "motion/react";
 import { Link, useNavigate } from "react-router-dom";
 export default function Navbar() {
+
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  
   return <>
-      <motion.nav
+      <Motion.nav
     className="fixed top-0 z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur"
     initial={{ y: -100, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
@@ -44,7 +46,7 @@ export default function Navbar() {
         <button onClick={() => setIsOpen(true)} className="md:hidden">
           <MenuIcon size={26} className="active:scale-90 transition" />
         </button>
-      </motion.nav>
+      </Motion.nav>
 
       <div
     className={`fixed inset-0 z-100 bg-black/40 backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-400 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
