@@ -38,6 +38,13 @@ const Generate = () => {
   useEffect(()=>{
     if(id){
       fetchThumbnail()
+    } else {
+      setThumbnail(null)
+      setAdditionalDetails('')
+      setTitle('')
+      setColorSchemeId(colorSchemes[0].id)
+      setAspectRatio('16:9')
+      setStyle('Bold & Graphic')
     }
   },[id])
 
