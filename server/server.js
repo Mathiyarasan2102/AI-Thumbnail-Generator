@@ -16,6 +16,8 @@ app.use(cors({
     credentials: true
 }));
 
+app.use(express.json());
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -27,8 +29,6 @@ app.use(session({
     })
 
 }))
-
-app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('Server is Live!');
