@@ -5,6 +5,7 @@ import { connect } from 'mongoose';
 import connectDB from './configs/db.js';
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import AuthRouter from './routes/authRoutes.js';
 
 await connectDB();
 
@@ -32,6 +33,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Server is Live!');
 });
+
+app.use('/api/auth', AuthRouter)
 
 const port = process.env.PORT || 3000;
 
