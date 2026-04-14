@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config'
-import { connect } from 'mongoose';
 import connectDB from './configs/db.js';
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import AuthRouter from './routes/authRoutes.js';
+import ThumbnailRouter from './routes/thumbnailRoutes.js';
 
 await connectDB();
 
@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', AuthRouter)
+app.use('/api/thumbnail', ThumbnailRouter)
 
 const port = process.env.PORT || 3000;
 

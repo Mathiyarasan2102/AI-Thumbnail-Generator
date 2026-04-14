@@ -1,5 +1,5 @@
 import { req, res, response } from 'express'
-import Thumbnail from '../models/thumbnail';
+import Thumbnail from '../models/thumbnail.js';
 import { HarmCategory, HarmBlockThreshold, GenerateContentCofig } from '@google/genai';
 import ai from '../configs/ai.js'
 import path from 'path'
@@ -138,6 +138,21 @@ export const generateThumbnail = async (req, res) => {
         //remove image file from disk
 
         fs.unlinkSync(filePath);
+    } catch (error) {
+        console.error('Error generating thumbnail:', error);
+        res.status(500).json({ message: 'Failed to generate thumbnail', error: error.message })
+    }
+}
+
+//controllers for Thumbnail deletion
+export const deleteThumbnail = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.session;
+
+        await Thumbnail.findByIdAndDelete({ _id: id, userId })
+
+        res.json({ message: 'Thumbnail deleted successfully' });
     } catch (error) {
         console.error('Error generating thumbnail:', error);
         res.status(500).json({ message: 'Failed to generate thumbnail', error: error.message })
