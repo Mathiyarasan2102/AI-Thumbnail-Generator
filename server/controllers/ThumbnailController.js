@@ -1,6 +1,6 @@
-import { req, res, response } from 'express'
+import express from 'express';
 import Thumbnail from '../models/thumbnail.js';
-import { HarmCategory, HarmBlockThreshold, GenerateContentCofig } from '@google/genai';
+import { HarmCategory, HarmBlockThreshold, } from '@google/genai';
 import ai from '../configs/ai.js'
 import path from 'path'
 import fs, { write } from 'fs';

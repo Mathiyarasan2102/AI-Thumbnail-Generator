@@ -9,23 +9,25 @@ import MyGeneration from "./pages/MyGeneration";
 import YtPreview from "./pages/YtPreview";
 import Login from "./components/Login";
 import { useEffect } from "react";
+import { Toaster } from 'react-hot-toast'
 export default function App() {
-    const {pathname} = useLocation();
-    
-    useEffect(()=>{
-        window.scrollTo(0,0)
-    },[pathname])
-  return <>
-            <LenisScroll />
-            <Navbar />
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/generate" element={<Generate />} />
-                <Route path="/generate/:id" element={<Generate />} />
-                <Route path="/my-generations" element={<MyGeneration />} />
-                <Route path="/preview" element={<YtPreview />} />
-            </Routes>
-            <Footer />
-        </>;
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [pathname])
+    return <>
+        <Toaster />
+        <LenisScroll />
+        <Navbar />
+        <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/generate" element={<Generate />} />
+            <Route path="/generate/:id" element={<Generate />} />
+            <Route path="/my-generations" element={<MyGeneration />} />
+            <Route path="/preview" element={<YtPreview />} />
+        </Routes>
+        <Footer />
+    </>;
 }

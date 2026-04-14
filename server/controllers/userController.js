@@ -1,4 +1,4 @@
-import { req, res } from 'express'
+import express from 'express'
 import Thumbnail from '../models/thumbnail.js';
 
 // Controllers to get ALL User Thumbnails
@@ -26,6 +26,7 @@ export const getThumbnailbyId = async (req, res) => {
 
         const thumbnail = await Thumbnail.findOne({ userId, _id: id })
         res.json({ thumbnail })
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message })
