@@ -9,9 +9,14 @@ const PreviewPanel = ({ thumbnail, isLoading, aspectRatio }) => {
 
     };
 
-    const onDownload = ()=>{
-        if(!thumbnail.image_url) return;
+    const onDownload = () => {
+        if (!thumbnail.image_url) return;
         window.open(thumbnail.image_url, '_blank')
+        const link = document.createElement('a');
+        link.href = thumbnail?.image_url.replace('/upload', '/upload/fl_attachment')
+        document.body.appendChild(link);
+        link.click()
+        link.remove()
     }
     return (
         <div className="relative mx-auto w-full max-w-2xl">
@@ -49,7 +54,7 @@ const PreviewPanel = ({ thumbnail, isLoading, aspectRatio }) => {
                 {!isLoading && !thumbnail?.image_url && (
                     <div className="absolute inset-0 m-2 flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-white/20 bg-black/25">
                         <div className="max-sm:hidden flex size-20 items-center justify-center rounded-full bg-white/10">
-                            <ImageIcon className="size-10 text-white opacity-50"/>
+                            <ImageIcon className="size-10 text-white opacity-50" />
                         </div>
 
                         <div className="px-4 text-center">

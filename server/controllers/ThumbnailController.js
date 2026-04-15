@@ -30,6 +30,8 @@ const colorSchemeDescriptions = {
     pastel: 'soft pastel colors, low saturation, gentle tones, calm and friendly aesthetic'
 }
 export const generateThumbnail = async (req, res) => {
+    let thumbnail = null;
+    
     try {
         const { userId } = req.session;
 
@@ -37,7 +39,7 @@ export const generateThumbnail = async (req, res) => {
         const { title, prompt: user_prompt, style, aspect_ratio, color_scheme, text_overlay } = req.body;
 
 
-        const thumbnail = await Thumbnail.create({
+        thumbnail = await Thumbnail.create({
             userId,
             title,
             prompt_used: user_prompt,
@@ -82,7 +84,8 @@ export const generateThumbnail = async (req, res) => {
         let prompt = `Create a ${stylePrompts[style]} for: "${title}" `;
 
         if (color_scheme) {
-            prompt += `Use a ${colorSchemeDescriptions[color_scheme]} color scheme.`
+            const colorKey = color_scheme.toLowerCase();
+            prompt += `Use a ${colorSchemeDescriptions[colorKey] || colorKey} color scheme.`
         }
 
         if (user_prompt) {
@@ -116,7 +119,7 @@ export const generateThumbnail = async (req, res) => {
 
         const finalname = `final-output-${Date.now()}.png`;
 
-        const filePath = path.join('images', filename);
+        const filePath = path.join('images', finalname);
 
         // Create image directory if it doesn't exist
 
@@ -130,7 +133,7 @@ export const generateThumbnail = async (req, res) => {
             resource_type: 'image'
         });
 
-        thumbnail.imageUrl = uploadResult.url;
+        thumbnail.image_url = uploadResult.url;
         thumbnail.isGenerating = false;
         await thumbnail.save();
         res.json({ message: 'Thumbnail generated successfully' })
@@ -140,6 +143,24 @@ export const generateThumbnail = async (req, res) => {
         fs.unlinkSync(filePath);
     } catch (error) {
         console.error('Error generating thumbnail:', error);
+        
+        // Handle specific API quota/rate limit errors
+        if (error.status === 429 || error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
+            // Update thumbnail status to failed
+            thumbnail.isGenerating = false;
+            await thumbnail.save();
+            
+            return res.status(429).json({ 
+                message: 'AI generation quota exceeded. Please check your Gemini API plan and billing details, or wait a moment before trying again.', 
+                error: 'API quota exceeded',
+                retryAfter: error.details?.find(d => d['@type']?.includes('RetryInfo'))?.retryDelay || 'unknown'
+            });
+        }
+        
+        // Handle other errors - update thumbnail status
+        thumbnail.isGenerating = false;
+        await thumbnail.save().catch(() => {}); // Ignore save errors here
+        
         res.status(500).json({ message: 'Failed to generate thumbnail', error: error.message })
     }
 }
