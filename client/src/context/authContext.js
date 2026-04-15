@@ -45,11 +45,13 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
             setIsLoggedIn(false);
             toast.success(data.message);
+            // Set flag to show toast once after logout
+            localStorage.setItem('shouldShowAuthToast', true);
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
         }
-    }
+    };
 
     const fetchUser = async () => {
         try {
@@ -57,12 +59,25 @@ export const AuthProvider = ({ children }) => {
             if (data.user) {
                 setUser(data.user);
                 setIsLoggedIn(true);
+                // Clear the flag to prevent toast on subsequent refreshes
+                if (localStorage.getItem('shouldShowAuthToast')) {
+                    localStorage.removeItem('shouldShowAuthToast');
+                }
+            } else {
+                // Show toast only if the flag is set (after logout)
+                if (localStorage.getItem('shouldShowAuthToast')) {
+                    toast.error('You are not logged in.');
+                    localStorage.removeItem('shouldShowAuthToast'); // Clear flag after showing
+                }
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.message);
+            if (localStorage.getItem('shouldShowAuthToast')) {
+                toast.error('Authentication failed. Please try again.');
+                localStorage.removeItem('shouldShowAuthToast');
+            }
         }
-    }
+    };
 
     useEffect(() => {
         (async () => {
@@ -78,10 +93,10 @@ export const AuthProvider = ({ children }) => {
         logout
     }
     return (
-        <AuthContext.Provider>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     )
 }
 
-export const useAuth = () => { useContext(AuthContext) };
+export const useAuth = () => useContext(AuthContext);
