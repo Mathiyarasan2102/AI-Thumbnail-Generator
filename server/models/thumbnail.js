@@ -6,7 +6,7 @@ const ThumbnailSchema = new mongoose.Schema({
     description: { type: String, trim: true },
     style: { type: String, enum: ["Bold & Graphic", "Tech/Futuristic", "Minimalistic", "Photorealistic", "Illustrated"] },
     aspect_ratio: { type: String, enum: ["16:9", "1:1", "9:16"], default: '16:9 ' },
-    color_scheme: { type: String, enum: ["Vibrant", "Sunset", "Forest", "Neon", "Purple", "Monochrome", "Ocean", "Pastel"] },
+    color_scheme: { type: String, enum: ["vibrant", "sunset", "forest", "neon", "purple", "monochrome", "ocean", "pastel", "Vibrant", "Sunset", "Forest", "Neon", "Purple", "Monochrome", "Ocean", "Pastel"] },
     text_overlay: { type: Boolean, default: false },
     image_url: { type: String, default: '' },
     prompt_used: { type: String },
