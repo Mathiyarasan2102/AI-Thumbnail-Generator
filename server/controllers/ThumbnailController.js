@@ -31,7 +31,7 @@ const colorSchemeDescriptions = {
 }
 export const generateThumbnail = async (req, res) => {
     let thumbnail = null;
-    
+
     try {
         const { userId } = req.session;
 
@@ -143,24 +143,24 @@ export const generateThumbnail = async (req, res) => {
         fs.unlinkSync(filePath);
     } catch (error) {
         console.error('Error generating thumbnail:', error);
-        
+
         // Handle specific API quota/rate limit errors
         if (error.status === 429 || error.message?.includes('quota') || error.message?.includes('RESOURCE_EXHAUSTED')) {
             // Update thumbnail status to failed
             thumbnail.isGenerating = false;
             await thumbnail.save();
-            
-            return res.status(429).json({ 
-                message: 'AI generation quota exceeded. Please check your Gemini API plan and billing details, or wait a moment before trying again.', 
+
+            return res.status(429).json({
+                message: 'AI generation quota exceeded. Please check your Gemini API plan and billing details, or wait a moment before trying again.',
                 error: 'API quota exceeded',
                 retryAfter: error.details?.find(d => d['@type']?.includes('RetryInfo'))?.retryDelay || 'unknown'
             });
         }
-        
+
         // Handle other errors - update thumbnail status
         thumbnail.isGenerating = false;
-        await thumbnail.save().catch(() => {}); // Ignore save errors here
-        
+        await thumbnail.save().catch(() => { }); // Ignore save errors here
+
         res.status(500).json({ message: 'Failed to generate thumbnail', error: error.message })
     }
 }

@@ -46,17 +46,61 @@ const MyGeneration = () => {
     link.remove()
   }
 
-  const handleDelete = async (id) => {
-    try {
-      const confirm = window.confirm('Are you sure you want to delete this thumbnail?')
-      if (!confirm) return;
-      const { data } = await api.delete(`/api/thumbnail/delete/${id}`)
-      toast.success(data.message)
-      setThumbnails(thumbnails.filter((t) => t._id !== id))
-    } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message || error.message)
-    }
+  const handleDelete = (id) => {
+    toast((t) => (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <span style={{ fontSize: '14px' }}>Delete this thumbnail?</span>
+        <button
+          onClick={async () => {
+            toast.dismiss(t.id)
+            try {
+              const { data } = await api.delete(`/api/thumbnail/delete/${id}`)
+              toast.success(data.message)
+              setThumbnails(prev => prev.filter((t) => t._id !== id))
+            } catch (error) {
+              console.log(error)
+              toast.error(error?.response?.data?.message || error.message)
+            }
+          }}
+          style={{
+            padding: '4px 12px',
+            borderRadius: '6px',
+            background: '#e11d48',
+            color: 'white',
+            border: 'none',
+            fontWeight: 600,
+            fontSize: '13px',
+            cursor: 'pointer',
+          }}
+        >
+          Delete
+        </button>
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          style={{
+            padding: '4px 12px',
+            borderRadius: '6px',
+            background: 'rgba(255,255,255,0.1)',
+            color: '#a1a1aa',
+            border: '1px solid rgba(255,255,255,0.15)',
+            fontWeight: 500,
+            fontSize: '13px',
+            cursor: 'pointer',
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    ), {
+      duration: 6000,
+      style: {
+        background: '#18181b',
+        color: '#e4e4e7',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '12px',
+        padding: '12px 16px',
+      },
+    })
   }
 
   useEffect(() => {
